@@ -23,7 +23,7 @@ public class Generator {
 	
 	private void init(int n) {
 		for(int i = 0; i < n * n; i++) {
-			m_BlockList.add(new Block(n));
+			//m_BlockList.add(new Block(n));
 		}
 	}
 	
