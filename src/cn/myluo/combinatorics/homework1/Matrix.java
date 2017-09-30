@@ -1,6 +1,7 @@
 package cn.myluo.combinatorics.homework1;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class Matrix {
             } else {
                 while(!choose(m_RandList.get(m_Random.nextInt(m_RandList.size())), m_Random.nextInt(m_N * m_N)));
             }
+            System.out.println(getChooseCount());
         }
     }
     
@@ -134,6 +136,14 @@ public class Matrix {
         }
     }
     
+    public int getChooseCount() {
+    	int count = 0;
+    	for(int i = 0; i < m_BlockList.size(); i++) {
+    		count += m_BlockList.get(i).getCount();
+    	}
+    	return count;
+    }
+    
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for(int row = 0; row < m_N * m_N; row++) {
@@ -150,9 +160,12 @@ public class Matrix {
     }
     
     public static void main(String[] args) {
+    	long startTime = Calendar.getInstance().getTimeInMillis();
         Matrix matrix = new Matrix(3);
         matrix.increase();
+        long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(matrix);
+        System.out.println(stopTime - startTime);
     }
 
 }
