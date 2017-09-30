@@ -1,7 +1,9 @@
 package cn.myluo.combinatorics.homework1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Matrix {
@@ -11,6 +13,8 @@ public class Matrix {
     private List<Integer> m_Record;
     
     private List<Integer> m_Possible;
+    
+    private Map<Integer, Integer> m_PossibleMap;
     
     private List<Integer> m_RandList;
     
@@ -26,6 +30,7 @@ public class Matrix {
         m_BlockList = new ArrayList<Block>();
         m_Record = new ArrayList<Integer>();
         m_Possible = new ArrayList<Integer>();
+        m_PossibleMap = new HashMap<Integer, Integer>();
         m_RandList = new ArrayList<Integer>();
         m_RandIndex = new ArrayList<Integer>();
         m_Random = new Random(System.currentTimeMillis());
@@ -51,10 +56,12 @@ public class Matrix {
         while(m_Count != m_N * m_N) {
             if(m_Possible.size() != 0) {
                 if(!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N))) {
-                    //m_Possible.clear();
-                    m_Possible.add(0, m_Record.get(m_Record.size() - 1));
+                	int value = m_Record.get(m_Record.size() - 1);
+                    m_Possible.add(0, value);
+                    m_PossibleMap.put(value, value);
                     cancel(m_Possible.get(0));
                 } else {
+                	m_PossibleMap.remove(m_Possible.get(0));
                     m_Possible.remove(0);
                 }
             } else {
@@ -70,12 +77,15 @@ public class Matrix {
         int value = next.get(0);
         if(value == -1) return false;
         next.remove(0);
-        m_Possible.addAll(next);
+        for(int i = 0; i < next.size(); i++) {
+        	int possibleValue = next.get(i);
+        	if(m_PossibleMap.get(possibleValue) == null) {
+        		m_Possible.add(possibleValue);
+        		m_PossibleMap.put(possibleValue, possibleValue);
+        	}
+        }
         m_Record.add(index);
         int rankIndex = m_RandIndex.get(index);
-        if(rankIndex == -1) {
-            System.out.println("-1");
-        }
         m_RandList.set(rankIndex, m_RandList.get(m_RandList.size() - 1));
         m_RandIndex.set(m_RandList.get(rankIndex), rankIndex);
         m_RandIndex.set(index, -1);
@@ -83,11 +93,25 @@ public class Matrix {
         if(m_BlockList.get(blockIndex).getCount() == m_N * m_N) m_Count++;
         for(int i = blockIndex % m_N; i < blockIndex % m_N + m_N * m_N; i += m_N) {
             if(i == blockIndex) continue;
-            m_Possible.addAll(m_BlockList.get(i).limit(gridIndex % m_N, value));
+            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex % m_N, value);
+            for(int j = 0; j < possibleList.size(); j++) {
+            	int possibleValue = possibleList.get(j);
+            	if(m_PossibleMap.get(possibleValue) == null) {
+            		m_Possible.add(possibleValue);
+            		m_PossibleMap.put(possibleValue, possibleValue);
+            	}
+            }
         }
         for(int i = blockIndex / m_N * m_N; i < blockIndex / m_N * m_N + m_N; i++) {
             if(i == blockIndex) continue;
-            m_Possible.addAll(m_BlockList.get(i).limit(gridIndex / m_N + m_N, value));
+            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex / m_N + m_N, value);
+            for(int j = 0; j < possibleList.size(); j++) {
+            	int possibleValue = possibleList.get(j);
+            	if(m_PossibleMap.get(possibleValue) == null) {
+            		m_Possible.add(possibleValue);
+            		m_PossibleMap.put(possibleValue, possibleValue);
+            	}
+            }
         }
         return true;
     }
