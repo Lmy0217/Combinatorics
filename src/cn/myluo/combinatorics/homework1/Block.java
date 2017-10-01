@@ -92,6 +92,22 @@ public class Block {
         return value;
 	}
 	
+	public List<Integer> setGrid(int index, int value) {
+		List<Integer> next = new ArrayList<Integer>();
+        int status = m_GridList.get(index).setValue(value);
+        next.add(status);
+        if(status == -1) return next;
+        m_ConstraintMap.put(value, value);
+        for(int i = 0; i < m_N * m_N; i++) {
+            if(i == index) continue;
+            if(m_GridList.get(i).limit(value)) {
+                next.add(i + m_Index * m_N * m_N);
+            }
+        }
+        m_Count++;
+        return next;
+	}
+	
 	public String getConstraintRow(int index) {
 	    StringBuilder sb = new StringBuilder();
         for(int i = index * m_N; i < (1 + index) * m_N; i++) {

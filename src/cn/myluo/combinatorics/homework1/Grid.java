@@ -66,7 +66,7 @@ public class Grid {
 		m_ConstraintIndex.set(m_ConstraintList.get(index) - 1, index);
 		m_ConstraintIndex.set(value - 1, -1);
 		m_ConstraintList.remove(m_ConstraintList.size() - 1);
-		return m_ConstraintList.size() == 1;
+		return m_ConstraintList.size() == 5;
 	}
 	
 	public void expand(int value) {
@@ -102,6 +102,25 @@ public class Grid {
 	    m_Value = 0;
 	    m_isChoose = false;
 	    return temp;
+	}
+	
+	public int setValue(int value) {
+		if(m_ConstraintIndex.get(value - 1) == -1) return -1;
+		if(!m_isStart) {
+	        m_NextList.clear();
+	        m_NextList.addAll(m_ConstraintList);
+	        m_NextIndex.clear();
+	        m_NextIndex.addAll(m_ConstraintIndex);
+	        m_isStart = true;
+	    }
+		m_Value = value;
+	    int index = m_NextIndex.get(value - 1);
+	    m_NextList.set(index, m_NextList.get(m_NextList.size() - 1));
+	    m_NextIndex.set(m_NextList.get(index) - 1, index);
+        m_NextIndex.set(m_Value - 1, -1);
+        m_NextList.remove(m_NextList.size() - 1);
+	    m_isChoose = true;
+	    return 0;
 	}
 	
 	public String toString() {
