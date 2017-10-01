@@ -15,6 +15,8 @@ public class Grid {
 	
 	private List<Integer> m_NextIndex;
 	
+	private int m_N;
+	
 	private boolean m_isChoose;
 	
 	private boolean m_isStart;
@@ -28,11 +30,12 @@ public class Grid {
 	
 	public Grid(int n) {
 		this();
-		init(n);
+		m_N = n;
+		init();
 	}
 	
-	private void init(int n) {
-		for(int i = 0; i < n * n; i++) {
+	private void init() {
+		for(int i = 0; i < m_N * m_N; i++) {
 			m_ConstraintList.add(1 + i);
 			m_ConstraintIndex.add(i);
 		}
@@ -124,7 +127,14 @@ public class Grid {
 	}
 	
 	public String toString() {
-	    return m_Value == 0 ? "x" : ("" + m_Value);
+		int width = 1 + ("" + (m_N * m_N)).length();
+		String str = m_Value == 0 ? "x" : ("" + m_Value);
+		StringBuilder sb = new StringBuilder();
+	    for(int i = 0; i < width - str.length(); i++) {
+	    	sb.append(" ");
+	    }
+	    sb.append(str);
+	    return sb.toString();
 	}
 
 }

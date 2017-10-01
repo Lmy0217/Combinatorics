@@ -112,8 +112,13 @@ public class Block {
 	
 	public String getConstraintRow(int index) {
 	    StringBuilder sb = new StringBuilder();
+	    int width = 1 + ("" + (m_N * m_N)).length();
         for(int i = index * m_N; i < (1 + index) * m_N; i++) {
-            sb.append(m_GridList.get(i).getConstraintCount());
+        	String count = "" + m_GridList.get(i).getConstraintCount();
+        	for(int j = 0; j < width - count.length(); j++) {
+        		sb.append(" ");
+        	}
+        	sb.append(count);
         }
         return sb.toString();
 	}
