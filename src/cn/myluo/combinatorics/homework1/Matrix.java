@@ -282,7 +282,7 @@ public class Matrix {
         	    	0, 0, 6, 8, 0, 3, 9, 4, 0
     			}
     	};
-    	Matrix matrix = new Matrix(puzzles[2]);
+    	Matrix matrix = new Matrix(puzzles[1]);
         matrix.increase();
         long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(matrix);

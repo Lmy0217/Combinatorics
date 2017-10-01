@@ -61,7 +61,9 @@ public class Block {
 	    if(m_Count == m_N * m_N || m_ConstraintMap.get(value) != null || m_ConstraintList.get(index).get(value) == null) return;
 	    m_ConstraintList.get(index).remove(value);
         for(int i = ((index < m_N) ? index : ((index - m_N) * m_N)); i < ((index < m_N) ? (index + m_N * m_N) : ((index - m_N) * m_N + m_N)); i += ((index < m_N) ? m_N : 1)) {
-            m_GridList.get(i).expand(value);
+        	if(m_ConstraintList.get((index < m_N) ? (i / m_N + m_N) : (i % m_N)).get(value) == null) {
+        		m_GridList.get(i).expand(value);
+        	}
         }
 	}
 	
