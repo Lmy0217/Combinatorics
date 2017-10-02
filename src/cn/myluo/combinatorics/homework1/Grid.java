@@ -62,18 +62,17 @@ public class Grid {
     }
 	
 	public boolean limit(int value) {
-	    if(m_isChoose) return false;
 		int index = m_ConstraintIndex.get(value - 1);
 		if(index == -1) return false;
 		m_ConstraintList.set(index, m_ConstraintList.get(m_ConstraintList.size() - 1));
 		m_ConstraintIndex.set(m_ConstraintList.get(index) - 1, index);
 		m_ConstraintIndex.set(value - 1, -1);
 		m_ConstraintList.remove(m_ConstraintList.size() - 1);
-		return m_ConstraintList.size() <= (new Double(Math.ceil(m_N * m_N / 2.0))).intValue();
+		return !m_isChoose && m_ConstraintList.size() <= (new Double(Math.ceil(m_N * m_N / 2.0))).intValue();
 	}
 	
 	public void expand(int value) {
-	    if(m_isChoose || m_ConstraintIndex.get(value - 1) != -1) return;
+		if(m_ConstraintIndex.get(value - 1) != -1) return;
 		m_ConstraintList.add(value);
 		m_ConstraintIndex.set(value - 1, m_ConstraintList.size() - 1);
 	}
@@ -96,11 +95,18 @@ public class Grid {
 	    m_NextIndex.set(m_NextList.get(index) - 1, index);
         m_NextIndex.set(m_Value - 1, -1);
         m_NextList.remove(m_NextList.size() - 1);
+        int constraintIndex = m_ConstraintIndex.get(m_Value - 1);
+        m_ConstraintList.set(constraintIndex, m_ConstraintList.get(m_ConstraintList.size() - 1));
+		m_ConstraintIndex.set(m_ConstraintList.get(constraintIndex) - 1, constraintIndex);
+		m_ConstraintIndex.set(m_Value - 1, -1);
+		m_ConstraintList.remove(m_ConstraintList.size() - 1);
 	    m_isChoose = true;
 	    return m_Value;
 	}
 	
 	public int cancel() {
+		m_ConstraintList.add(m_Value);
+		m_ConstraintIndex.set(m_Value - 1, m_ConstraintList.size() - 1);
 	    int temp = m_Value;
 	    m_Value = 0;
 	    m_isChoose = false;

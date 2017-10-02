@@ -97,6 +97,10 @@ public class Matrix {
         }
     }
     
+    public void reduce() {
+    	
+    }
+    
     private boolean choose(int index, int rand, boolean isValue) {
         int blockIndex = index / (m_N * m_N);
         int gridIndex = index % (m_N * m_N);
@@ -165,7 +169,7 @@ public class Matrix {
         }
     }
     
-    public int getChooseCount() {
+    private int getChooseCount() {
     	int count = 0;
     	for(int i = 0; i < m_BlockList.size(); i++) {
     		count += m_BlockList.get(i).getCount();
@@ -236,7 +240,7 @@ public class Matrix {
         	    	0, 0, 6, 8, 0, 3, 9, 4, 0
     			}
     	};
-    	Matrix matrix = new Matrix(puzzles[2]);
+    	Matrix matrix = new Matrix(puzzles[0]);
         matrix.increase();
         long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(matrix);
