@@ -67,15 +67,15 @@ public class Block {
         }
 	}
 	
-	public List<Integer> choose(int index, int rand) {
+	public List<Integer> choose(int index, int rand, boolean isValue) {
 	    List<Integer> next = new ArrayList<Integer>();
-        int value = m_GridList.get(index).choose(rand);
+        int value = m_GridList.get(index).choose(rand, isValue);
         next.add(value);
         if(value == -1) return next;
-        m_ConstraintMap.put(value, value);
+        m_ConstraintMap.put(isValue ? rand : value, isValue ? rand : value);
         for(int i = 0; i < m_N * m_N; i++) {
             if(i == index) continue;
-            if(m_GridList.get(i).limit(value)) {
+            if(m_GridList.get(i).limit(isValue ? rand : value)) {
                 next.add(i + m_Index * m_N * m_N);
             }
         }
@@ -92,22 +92,6 @@ public class Block {
         }
         m_Count--;
         return value;
-	}
-	
-	public List<Integer> setGrid(int index, int value) {
-		List<Integer> next = new ArrayList<Integer>();
-        int status = m_GridList.get(index).setValue(value);
-        next.add(status);
-        if(status == -1) return next;
-        m_ConstraintMap.put(value, value);
-        for(int i = 0; i < m_N * m_N; i++) {
-            if(i == index) continue;
-            if(m_GridList.get(i).limit(value)) {
-                next.add(i + m_Index * m_N * m_N);
-            }
-        }
-        m_Count++;
-        return next;
 	}
 	
 	public String getConstraintRow(int index) {

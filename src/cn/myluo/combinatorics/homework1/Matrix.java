@@ -73,7 +73,7 @@ public class Matrix {
     		int blockIndex = row / m_N * m_N + col / m_N;
     		int gridIndex = row % m_N * m_N + col % m_N;
     		int index = blockIndex *  m_N * m_N + gridIndex;
-    		if(!setGrid(index, puzzle[i])) return false;
+    		if(!choose(index, puzzle[i], true)) return false;
     	}
     	return true;
     }
@@ -81,7 +81,7 @@ public class Matrix {
     public void increase() {
         while(m_Count != m_N * m_N) {
             if(m_Possible.size() != 0) {
-                if(!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N))) {
+                if(!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N), false)) {
                 	int value = m_Record.get(m_Record.size() - 1);
                     m_Possible.add(0, value);
                     m_PossibleMap.put(value, value);
@@ -91,19 +91,23 @@ public class Matrix {
                     m_Possible.remove(0);
                 }
             } else {
-                while(!choose(m_RandList.get(m_Random.nextInt(m_RandList.size())), m_Random.nextInt(m_N * m_N)));
+                while(!choose(m_RandList.get(m_Random.nextInt(m_RandList.size())), m_Random.nextInt(m_N * m_N), false));
             }
             System.out.println(getChooseCount());
         }
     }
     
-    private boolean choose(int index, int rand) {
+    private boolean choose(int index, int rand, boolean isValue) {
         int blockIndex = index / (m_N * m_N);
         int gridIndex = index % (m_N * m_N);
-        List<Integer> next = m_BlockList.get(blockIndex).choose(gridIndex, rand);
+        List<Integer> next = m_BlockList.get(blockIndex).choose(gridIndex, rand, isValue);
         int value = next.get(0);
         if(value == -1) return false;
         next.remove(0);
+        if(isValue && m_PossibleMap.get(index) != null) {
+        	m_PossibleMap.remove(index);
+        	m_Possible.remove((Object)index);
+        }
         for(int i = 0; i < next.size(); i++) {
         	int possibleValue = next.get(i);
         	if(m_PossibleMap.get(possibleValue) == null) {
@@ -120,7 +124,7 @@ public class Matrix {
         if(m_BlockList.get(blockIndex).getCount() == m_N * m_N) m_Count++;
         for(int i = blockIndex % m_N; i < blockIndex % m_N + m_N * m_N; i += m_N) {
             if(i == blockIndex) continue;
-            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex % m_N, value);
+            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex % m_N, isValue ? rand : value);
             for(int j = 0; j < possibleList.size(); j++) {
             	int possibleValue = possibleList.get(j);
             	if(m_PossibleMap.get(possibleValue) == null) {
@@ -131,7 +135,7 @@ public class Matrix {
         }
         for(int i = blockIndex / m_N * m_N; i < blockIndex / m_N * m_N + m_N; i++) {
             if(i == blockIndex) continue;
-            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex / m_N + m_N, value);
+            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex / m_N + m_N, isValue ? rand : value);
             for(int j = 0; j < possibleList.size(); j++) {
             	int possibleValue = possibleList.get(j);
             	if(m_PossibleMap.get(possibleValue) == null) {
@@ -161,56 +165,6 @@ public class Matrix {
         }
     }
     
-    private boolean setGrid(int index, int value) {
-    	int blockIndex = index / (m_N * m_N);
-        int gridIndex = index % (m_N * m_N);
-        List<Integer> next = m_BlockList.get(blockIndex).setGrid(gridIndex, value);
-        int status = next.get(0);
-        if(status == -1) return false;
-        next.remove(0);
-        if(m_PossibleMap.get(index) != null) {
-        	m_PossibleMap.remove(index);
-        	m_Possible.remove((Object)index);
-        }
-        for(int i = 0; i < next.size(); i++) {
-        	int possibleValue = next.get(i);
-        	if(m_PossibleMap.get(possibleValue) == null) {
-        		m_Possible.add(possibleValue);
-        		m_PossibleMap.put(possibleValue, possibleValue);
-        	}
-        }
-        m_Record.add(index);
-        int rankIndex = m_RandIndex.get(index);
-        m_RandList.set(rankIndex, m_RandList.get(m_RandList.size() - 1));
-        m_RandIndex.set(m_RandList.get(rankIndex), rankIndex);
-        m_RandIndex.set(index, -1);
-        m_RandList.remove(m_RandList.size() - 1);
-        if(m_BlockList.get(blockIndex).getCount() == m_N * m_N) m_Count++;
-        for(int i = blockIndex % m_N; i < blockIndex % m_N + m_N * m_N; i += m_N) {
-            if(i == blockIndex) continue;
-            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex % m_N, value);
-            for(int j = 0; j < possibleList.size(); j++) {
-            	int possibleValue = possibleList.get(j);
-            	if(m_PossibleMap.get(possibleValue) == null) {
-            		m_Possible.add(possibleValue);
-            		m_PossibleMap.put(possibleValue, possibleValue);
-            	}
-            }
-        }
-        for(int i = blockIndex / m_N * m_N; i < blockIndex / m_N * m_N + m_N; i++) {
-            if(i == blockIndex) continue;
-            List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex / m_N + m_N, value);
-            for(int j = 0; j < possibleList.size(); j++) {
-            	int possibleValue = possibleList.get(j);
-            	if(m_PossibleMap.get(possibleValue) == null) {
-            		m_Possible.add(possibleValue);
-            		m_PossibleMap.put(possibleValue, possibleValue);
-            	}
-            }
-        }
-        return true;
-    }
-    
     public int getChooseCount() {
     	int count = 0;
     	for(int i = 0; i < m_BlockList.size(); i++) {
@@ -236,7 +190,7 @@ public class Matrix {
     
     public static void main(String[] args) {
     	long startTime = Calendar.getInstance().getTimeInMillis();
-        Matrix matrix = new Matrix(3);
+//        Matrix matrix = new Matrix(3);
 //    	Matrix matrix = new Matrix(new int[]{
 //    			8, 0, 0, 0, 0, 0, 0, 0, 0,
 //    			0, 0, 3, 6, 0, 0, 0, 0, 0,
@@ -247,42 +201,42 @@ public class Matrix {
 //    			0, 0, 1, 0, 0, 0, 0, 6, 8,
 //    			0, 0, 8, 5, 0, 0, 0, 1, 0,
 //    			0, 9, 0, 0, 0, 0, 4, 0, 0});
-//    	int[][] puzzles = {
-//    			{
-//    				8, 0, 0, 0, 0, 0, 0, 0, 0,
-//        		    0, 0, 3, 6, 0, 0, 0, 0, 0,
-//        		    0, 7, 0, 0, 9, 0, 2, 0, 0,
-//        		    0, 5, 0, 0, 0, 7, 0, 0, 0,
-//        		    0, 0, 0, 0, 4, 5, 7, 0, 0,
-//        		    0, 0, 0, 1, 0, 0, 0, 3, 0,
-//        		    0, 0, 1, 0, 0, 0, 0, 6, 8,
-//        		    0, 0, 8, 5, 0, 0, 0, 1, 0,
-//        		    0, 9, 0, 0, 0, 0, 4, 0, 0
-//        		},
-//    			{
-//        			0, 0, 7, 0, 0, 0, 8, 2, 0,
-//        	        0, 9, 0, 0, 0, 1, 0, 0, 0,
-//        	        0, 4, 0, 9, 7, 0, 0, 0, 0,
-//        	        0, 0, 0, 0, 0, 5, 4, 0, 6,
-//        	        0, 0, 3, 0, 0, 0, 7, 0, 0,
-//        	        5, 0, 6, 7, 0, 0, 0, 0, 0,
-//        	        0, 0, 0, 0, 8, 4, 0, 5, 0,
-//        	        0, 0, 0, 6, 0, 0, 0, 1, 0,
-//        	        0, 2, 4, 0, 0, 0, 6, 0, 0
-//        	    },
-//    			{
-//        	    	0, 8, 1, 3, 0, 2, 6, 0, 0,
-//        	    	6, 0, 9, 5, 0, 1, 0, 2, 0,
-//        	    	2, 3, 0, 0, 0, 0, 0, 0, 0,
-//        	    	5, 0, 2, 0, 3, 0, 7, 8, 9,
-//        	    	0, 0, 0, 0, 0, 0, 0, 0, 0,
-//        	    	4, 6, 3, 0, 8, 0, 2, 0, 1,
-//        	    	0, 0, 0, 0, 0, 0, 0, 6, 2,
-//        	    	0, 2, 0, 7, 0, 9, 5, 0, 3,
-//        	    	0, 0, 6, 8, 0, 3, 9, 4, 0
-//    			}
-//    	};
-//    	Matrix matrix = new Matrix(puzzles[1]);
+    	int[][] puzzles = {
+    			{
+    				8, 0, 0, 0, 0, 0, 0, 0, 0,
+        		    0, 0, 3, 6, 0, 0, 0, 0, 0,
+        		    0, 7, 0, 0, 9, 0, 2, 0, 0,
+        		    0, 5, 0, 0, 0, 7, 0, 0, 0,
+        		    0, 0, 0, 0, 4, 5, 7, 0, 0,
+        		    0, 0, 0, 1, 0, 0, 0, 3, 0,
+        		    0, 0, 1, 0, 0, 0, 0, 6, 8,
+        		    0, 0, 8, 5, 0, 0, 0, 1, 0,
+        		    0, 9, 0, 0, 0, 0, 4, 0, 0
+        		},
+    			{
+        			0, 0, 7, 0, 0, 0, 8, 2, 0,
+        	        0, 9, 0, 0, 0, 1, 0, 0, 0,
+        	        0, 4, 0, 9, 7, 0, 0, 0, 0,
+        	        0, 0, 0, 0, 0, 5, 4, 0, 6,
+        	        0, 0, 3, 0, 0, 0, 7, 0, 0,
+        	        5, 0, 6, 7, 0, 0, 0, 0, 0,
+        	        0, 0, 0, 0, 8, 4, 0, 5, 0,
+        	        0, 0, 0, 6, 0, 0, 0, 1, 0,
+        	        0, 2, 4, 0, 0, 0, 6, 0, 0
+        	    },
+    			{
+        	    	0, 8, 1, 3, 0, 2, 6, 0, 0,
+        	    	6, 0, 9, 5, 0, 1, 0, 2, 0,
+        	    	2, 3, 0, 0, 0, 0, 0, 0, 0,
+        	    	5, 0, 2, 0, 3, 0, 7, 8, 9,
+        	    	0, 0, 0, 0, 0, 0, 0, 0, 0,
+        	    	4, 6, 3, 0, 8, 0, 2, 0, 1,
+        	    	0, 0, 0, 0, 0, 0, 0, 6, 2,
+        	    	0, 2, 0, 7, 0, 9, 5, 0, 3,
+        	    	0, 0, 6, 8, 0, 3, 9, 4, 0
+    			}
+    	};
+    	Matrix matrix = new Matrix(puzzles[2]);
         matrix.increase();
         long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(matrix);
