@@ -47,8 +47,9 @@ public class Block {
 	
 	public List<Integer> limit(int index, int value) {
 	    List<Integer> next = new ArrayList<Integer>();
-	    if(m_Count == m_N * m_N || m_ConstraintMap.get(value) != null || m_ConstraintList.get(index).get(value) != null) return next;
+	    if(m_ConstraintList.get(index).get(value) != null) return next;
 	    m_ConstraintList.get(index).put(value, value);
+	    if(m_ConstraintMap.get(value) != null) return next;
 	    for(int i = ((index < m_N) ? index : ((index - m_N) * m_N)); i < ((index < m_N) ? (index + m_N * m_N) : ((index - m_N) * m_N + m_N)); i += ((index < m_N) ? m_N : 1)) {
 	        if(m_GridList.get(i).limit(value)) {
 	            next.add(i + m_Index * m_N * m_N);
@@ -58,8 +59,9 @@ public class Block {
 	}
 	
 	public void expand(int index, int value) {
-	    if(m_Count == m_N * m_N || m_ConstraintMap.get(value) != null || m_ConstraintList.get(index).get(value) == null) return;
+		if(m_ConstraintList.get(index).get(value) == null) return;
 	    m_ConstraintList.get(index).remove(value);
+	    if(m_ConstraintMap.get(value) != null) return;
         for(int i = ((index < m_N) ? index : ((index - m_N) * m_N)); i < ((index < m_N) ? (index + m_N * m_N) : ((index - m_N) * m_N + m_N)); i += ((index < m_N) ? m_N : 1)) {
         	if(m_ConstraintList.get((index < m_N) ? (i / m_N + m_N) : (i % m_N)).get(value) == null) {
         		m_GridList.get(i).expand(value);
@@ -83,8 +85,8 @@ public class Block {
         return next;
     }
 	
-	public int cancel(int index) {
-	    int value = m_GridList.get(index).cancel();
+	public int cancel(int index, boolean isStorage) {
+	    int value = m_GridList.get(index).cancel(isStorage);
 	    m_ConstraintMap.remove(value);
         for(int i = 0; i < m_N * m_N; i++) {
             if(i == index || m_ConstraintList.get(i % m_N).get(value) != null || m_ConstraintList.get(i / m_N + m_N).get(value) != null) continue;
@@ -92,6 +94,10 @@ public class Block {
         }
         m_Count--;
         return value;
+	}
+	
+	public void restore(int index) {
+		m_GridList.get(index).restore();
 	}
 	
 	public String getConstraintRow(int index) {

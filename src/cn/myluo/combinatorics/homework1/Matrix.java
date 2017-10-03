@@ -81,14 +81,17 @@ public class Matrix {
     	return true;
     }
     
-    public void increase() {
+    public boolean increase() {
         while(m_Count != m_N * m_N) {
             if(m_Possible.size() != 0) {
                 if(!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N), false)) {
+                	if(m_Record.size() == 0) {
+                		return false;
+                	}
                 	int value = m_Record.get(m_Record.size() - 1);
                     m_Possible.add(0, value);
                     m_PossibleMap.put(value, value);
-                    cancel(m_Possible.get(0));
+                    cancel(m_Possible.get(0), false);
                 } else {
                 	m_PossibleMap.remove(m_Possible.get(0));
                     m_Possible.remove(0);
@@ -96,12 +99,36 @@ public class Matrix {
             } else {
                 while(!choose(m_RandList.get(m_Random.nextInt(m_RandList.size())), m_Random.nextInt(m_N * m_N), false));
             }
-            System.out.println(getChooseCount());
+            //System.out.println(getChooseCount());
         }
+        return true;
     }
     
-    public void reduce() {
-    	
+    public void reduce(double rank) {
+    	for(int i = 0; i < m_N * m_N * m_N * m_N; i++) {
+    		//System.out.println("======" + i);
+    		if(m_Random.nextDouble() >= rank) continue;
+    		m_Record.clear();
+    		m_Possible.clear();
+    		m_PossibleMap.clear();
+    		int row = i / (m_N * m_N);
+    		int col = i % (m_N * m_N);
+    		int blockIndex = row / m_N * m_N + col / m_N;
+    		int gridIndex = row % m_N * m_N + col % m_N;
+    		int index = blockIndex *  m_N * m_N + gridIndex;
+    		m_Record.add(index);
+    		int value = cancel(index, true);
+    		if(choose(index, m_Random.nextInt(m_N * m_N), false) && increase()) {
+    			for(int j = m_Record.size() - 1; j >= 0; j--) {
+    				int recordValue = m_Record.get(j);
+    				cancel(recordValue, true);
+    				m_BlockList.get(recordValue / (m_N * m_N)).restore(recordValue % (m_N * m_N));
+    			}
+    			choose(index, value, true);
+    		} else {
+    			m_BlockList.get(blockIndex).restore(gridIndex);
+    		}
+    	}
     }
     
     private boolean choose(int index, int rand, boolean isValue) {
@@ -154,10 +181,10 @@ public class Matrix {
         return true;
     }
     
-    private void cancel(int index) {
+    private int cancel(int index, boolean isStorage) {
         int blockIndex = index / (m_N * m_N);
         int gridIndex = index % (m_N * m_N);
-        int value = m_BlockList.get(blockIndex).cancel(gridIndex);
+        int value = m_BlockList.get(blockIndex).cancel(gridIndex, isStorage);
         m_RandList.add(index);
         m_RandIndex.set(index, m_RandList.size() - 1);
         m_Record.remove(m_Record.size() - 1);
@@ -170,6 +197,7 @@ public class Matrix {
             if(i == blockIndex) continue;
             m_BlockList.get(i).expand(gridIndex / m_N + m_N, value);
         }
+        return value;
     }
     
     private int getChooseCount() {
@@ -245,6 +273,8 @@ public class Matrix {
 //    	};
 //    	Matrix matrix = new Matrix(puzzles[0]);
         matrix.increase();
+        System.out.println(matrix);
+        matrix.reduce(0.8);
         long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(matrix);
         System.out.println(stopTime - startTime);

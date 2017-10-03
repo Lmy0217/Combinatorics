@@ -21,6 +21,8 @@ public class Grid {
 	
 	private boolean m_isStart;
 	
+	private int m_Storage;
+	
 	private Grid() {
 		m_ConstraintList = new ArrayList<Integer>();
 		m_ConstraintIndex = new ArrayList<Integer>();
@@ -72,7 +74,7 @@ public class Grid {
 	}
 	
 	public void expand(int value) {
-		if(m_ConstraintIndex.get(value - 1) != -1) return;
+		if(m_ConstraintIndex.get(value - 1) != -1 || value == m_Storage) return;
 		m_ConstraintList.add(value);
 		m_ConstraintIndex.set(value - 1, m_ConstraintList.size() - 1);
 	}
@@ -100,17 +102,30 @@ public class Grid {
 		m_ConstraintIndex.set(m_ConstraintList.get(constraintIndex) - 1, constraintIndex);
 		m_ConstraintIndex.set(m_Value - 1, -1);
 		m_ConstraintList.remove(m_ConstraintList.size() - 1);
+		m_isStart = false;
 	    m_isChoose = true;
 	    return m_Value;
 	}
 	
-	public int cancel() {
-		m_ConstraintList.add(m_Value);
-		m_ConstraintIndex.set(m_Value - 1, m_ConstraintList.size() - 1);
+	public int cancel(boolean isStorage) {
+		if(!isStorage) {
+			m_ConstraintList.add(m_Value);
+			m_ConstraintIndex.set(m_Value - 1, m_ConstraintList.size() - 1);
+		} else {
+			m_Storage = m_Value;
+		}
 	    int temp = m_Value;
 	    m_Value = 0;
 	    m_isChoose = false;
+	    m_isStart = !isStorage;
 	    return temp;
+	}
+	
+	public void restore() {
+		m_ConstraintList.add(m_Storage);
+		m_ConstraintIndex.set(m_Storage - 1, m_ConstraintList.size() - 1);
+		m_Storage = 0;
+		m_isStart = false;
 	}
 	
 	public String toString() {
