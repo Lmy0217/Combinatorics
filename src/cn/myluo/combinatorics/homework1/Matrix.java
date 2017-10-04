@@ -28,6 +28,7 @@ public class Matrix {
     private Random m_Random;
     
     private Matrix() {
+        
         m_BlockList = new ArrayList<Block>();
         m_Record = new ArrayList<Integer>();
         m_Possible = new ArrayList<Integer>();
@@ -38,22 +39,21 @@ public class Matrix {
     }
     
     public Matrix(int n) {
+        
         this();
-        if(n < 1) {
-        	System.out.println("n must be positive!");
-        }
+        if(n < 1) System.out.println("n must be positive!");
         m_N = n;
         init();
     }
     
     public Matrix(int[] puzzle) {
-    	this();
-    	if(!init(puzzle)) {
-    		System.out.println("Puzzle error!");
-    	}
+        
+        this();
+        if(!init(puzzle)) System.out.println("Puzzle error!");
     }
     
     private void init() {
+        
         for(int i = 0; i < m_N * m_N; i++) {
             m_BlockList.add(new Block(m_N, i));
             for(int j = 0; j < m_N * m_N; j++) {
@@ -64,36 +64,36 @@ public class Matrix {
     }
     
     private boolean init(int[] puzzle) {
-    	if(puzzle == null) return false;
-    	double dn = Math.sqrt(Math.sqrt((double)puzzle.length));
-    	if(Math.floor(dn) != dn) return false;
-    	m_N = (new Double(dn)).intValue();
-    	init();
-    	for(int i = 0; i < puzzle.length; i++) {
-    		if(puzzle[i] < 1 || puzzle[i] > m_N * m_N) continue;
-    		int row = i / (m_N * m_N);
-    		int col = i % (m_N * m_N);
-    		int blockIndex = row / m_N * m_N + col / m_N;
-    		int gridIndex = row % m_N * m_N + col % m_N;
-    		int index = blockIndex *  m_N * m_N + gridIndex;
-    		if(!choose(index, puzzle[i], true)) return false;
-    	}
-    	return true;
+        
+        if(puzzle == null) return false;
+        double dn = Math.sqrt(Math.sqrt((double)puzzle.length));
+        if(Math.floor(dn) != dn) return false;
+        m_N = (new Double(dn)).intValue();
+        init();
+        for(int i = 0; i < puzzle.length; i++) {
+            if(puzzle[i] < 1 || puzzle[i] > m_N * m_N) continue;
+            int row = i / (m_N * m_N);
+            int col = i % (m_N * m_N);
+            int blockIndex = row / m_N * m_N + col / m_N;
+            int gridIndex = row % m_N * m_N + col % m_N;
+            int index = blockIndex *  m_N * m_N + gridIndex;
+            if(!choose(index, puzzle[i], true)) return false;
+        }
+        return true;
     }
     
     public boolean increase() {
+        
         while(m_Count != m_N * m_N) {
             if(m_Possible.size() != 0) {
                 if(!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N), false)) {
-                	if(m_Record.size() == 0) {
-                		return false;
-                	}
-                	int value = m_Record.get(m_Record.size() - 1);
+                    if(m_Record.size() == 0) return false;
+                    int value = m_Record.get(m_Record.size() - 1);
                     m_Possible.add(0, value);
                     m_PossibleMap.put(value, value);
                     cancel(m_Possible.get(0), false);
                 } else {
-                	m_PossibleMap.remove(m_Possible.get(0));
+                    m_PossibleMap.remove(m_Possible.get(0));
                     m_Possible.remove(0);
                 }
             } else {
@@ -105,40 +105,41 @@ public class Matrix {
     }
     
     public int[] reduce(double rank) {
-    	List<Integer> randList = randList(m_N * m_N * m_N * m_N);
-    	for(int i = 0; i < m_N * m_N * m_N * m_N; i++) {
-    		if(Sudoku.isTest) System.out.println("    reduce" + i);
-    		int randIndex = randList.get(i);
-    		if(m_Random.nextDouble() >= rank) {
-    			continue;
-    		}
-    		m_Record.clear();
-    		m_Possible.clear();
-    		m_PossibleMap.clear();
-    		int row = randIndex / (m_N * m_N);
-    		int col = randIndex % (m_N * m_N);
-    		int blockIndex = row / m_N * m_N + col / m_N;
-    		int gridIndex = row % m_N * m_N + col % m_N;
-    		int index = blockIndex *  m_N * m_N + gridIndex;
-    		m_Record.add(index);
-    		int value = cancel(index, true);
-    		if(choose(index, m_Random.nextInt(m_N * m_N), false) && increase()) {
-    			for(int j = m_Record.size() - 1; j > 0; j--) {
-    				int recordValue = m_Record.get(j);
-    				cancel(recordValue, true);
-    				m_BlockList.get(recordValue / (m_N * m_N)).restore(recordValue % (m_N * m_N));
-    			}
-    			cancel(m_Record.get(0), false);
-    			m_BlockList.get(blockIndex).restore(gridIndex);
-    			choose(index, value, true);
-    		} else {
-    			m_BlockList.get(blockIndex).restore(gridIndex);
-    		}
-    	}
-    	return toArray();
+        
+        if(rank <= 0 || rank >= 1) System.out.println("rank must between 0.0 and 1.0!");
+        List<Integer> randList = randList(m_N * m_N * m_N * m_N);
+        for(int i = 0; i < m_N * m_N * m_N * m_N; i++) {
+            if(Sudoku.isTest) System.out.println("    reduce" + i);
+            int randIndex = randList.get(i);
+            if(m_Random.nextDouble() >= rank) continue;
+            m_Record.clear();
+            m_Possible.clear();
+            m_PossibleMap.clear();
+            int row = randIndex / (m_N * m_N);
+            int col = randIndex % (m_N * m_N);
+            int blockIndex = row / m_N * m_N + col / m_N;
+            int gridIndex = row % m_N * m_N + col % m_N;
+            int index = blockIndex *  m_N * m_N + gridIndex;
+            m_Record.add(index);
+            int value = cancel(index, true);
+            if(choose(index, m_Random.nextInt(m_N * m_N), false) && increase()) {
+                for(int j = m_Record.size() - 1; j > 0; j--) {
+                    int recordValue = m_Record.get(j);
+                    cancel(recordValue, true);
+                    m_BlockList.get(recordValue / (m_N * m_N)).restore(recordValue % (m_N * m_N));
+                }
+                cancel(m_Record.get(0), false);
+                m_BlockList.get(blockIndex).restore(gridIndex);
+                choose(index, value, true);
+            } else {
+                m_BlockList.get(blockIndex).restore(gridIndex);
+            }
+        }
+        return toArray();
     }
     
     private boolean choose(int index, int rand, boolean isValue) {
+        
         int blockIndex = index / (m_N * m_N);
         int gridIndex = index % (m_N * m_N);
         List<Integer> next = m_BlockList.get(blockIndex).choose(gridIndex, rand, isValue);
@@ -146,15 +147,15 @@ public class Matrix {
         if(value == -1) return false;
         next.remove(0);
         if(isValue && m_PossibleMap.get(index) != null) {
-        	m_PossibleMap.remove(index);
-        	m_Possible.remove((Object)index);
+            m_PossibleMap.remove(index);
+            m_Possible.remove((Object)index);
         }
         for(int i = 0; i < next.size(); i++) {
-        	int possibleValue = next.get(i);
-        	if(m_PossibleMap.get(possibleValue) == null) {
-        		m_Possible.add(possibleValue);
-        		m_PossibleMap.put(possibleValue, possibleValue);
-        	}
+            int possibleValue = next.get(i);
+            if(m_PossibleMap.get(possibleValue) == null) {
+                m_Possible.add(possibleValue);
+                m_PossibleMap.put(possibleValue, possibleValue);
+            }
         }
         m_Record.add(index);
         int rankIndex = m_RandIndex.get(index);
@@ -167,28 +168,29 @@ public class Matrix {
             if(i == blockIndex) continue;
             List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex % m_N, isValue ? rand : value);
             for(int j = 0; j < possibleList.size(); j++) {
-            	int possibleValue = possibleList.get(j);
-            	if(m_PossibleMap.get(possibleValue) == null) {
-            		m_Possible.add(possibleValue);
-            		m_PossibleMap.put(possibleValue, possibleValue);
-            	}
+                int possibleValue = possibleList.get(j);
+                if(m_PossibleMap.get(possibleValue) == null) {
+                    m_Possible.add(possibleValue);
+                    m_PossibleMap.put(possibleValue, possibleValue);
+                }
             }
         }
         for(int i = blockIndex / m_N * m_N; i < blockIndex / m_N * m_N + m_N; i++) {
             if(i == blockIndex) continue;
             List<Integer> possibleList = m_BlockList.get(i).limit(gridIndex / m_N + m_N, isValue ? rand : value);
             for(int j = 0; j < possibleList.size(); j++) {
-            	int possibleValue = possibleList.get(j);
-            	if(m_PossibleMap.get(possibleValue) == null) {
-            		m_Possible.add(possibleValue);
-            		m_PossibleMap.put(possibleValue, possibleValue);
-            	}
+                int possibleValue = possibleList.get(j);
+                if(m_PossibleMap.get(possibleValue) == null) {
+                    m_Possible.add(possibleValue);
+                    m_PossibleMap.put(possibleValue, possibleValue);
+                }
             }
         }
         return true;
     }
     
     private int cancel(int index, boolean isStorage) {
+        
         int blockIndex = index / (m_N * m_N);
         int gridIndex = index % (m_N * m_N);
         int value = m_BlockList.get(blockIndex).cancel(gridIndex, isStorage);
@@ -208,43 +210,47 @@ public class Matrix {
     }
     
     private List<Integer> randList(int length) {
-		List<Integer> randList = new ArrayList<Integer>();
-		for(int i = 0; i < length; i++) {
-			randList.add(i);
-		}
-		Collections.shuffle(randList);
-		return randList;
-	}
+        
+        List<Integer> randList = new ArrayList<Integer>();
+        for(int i = 0; i < length; i++) {
+            randList.add(i);
+        }
+        Collections.shuffle(randList);
+        return randList;
+    }
     
     private int getChooseCount() {
-    	int count = 0;
-    	for(int i = 0; i < m_BlockList.size(); i++) {
-    		count += m_BlockList.get(i).getCount();
-    	}
-    	return count;
+        
+        int count = 0;
+        for(int i = 0; i < m_BlockList.size(); i++) {
+            count += m_BlockList.get(i).getCount();
+        }
+        return count;
     }
     
     public int[] toArray() {
-    	int[] array = new int[m_N * m_N * m_N * m_N];
-    	for(int row = 0; row < m_N * m_N; row++) {
-    		for(int col = 0; col < m_N; col++) {
-    			System.arraycopy(m_BlockList.get(row / m_N * m_N + col).getRowArray(row % m_N), 0, array, row * m_N * m_N + col * m_N, m_N);
-    		}
-    	}
-    	return array;
+        
+        int[] array = new int[m_N * m_N * m_N * m_N];
+        for(int row = 0; row < m_N * m_N; row++) {
+            for(int col = 0; col < m_N; col++) {
+                System.arraycopy(m_BlockList.get(row / m_N * m_N + col).getRowArray(row % m_N), 0, array, row * m_N * m_N + col * m_N, m_N);
+            }
+        }
+        return array;
     }
     
     public String toString() {
+        
         StringBuilder sb = new StringBuilder();
         for(int row = 0; row < m_N * m_N; row++) {
             for(int col = 0; col < m_N; col++) {
                 sb.append(m_BlockList.get(row / m_N * m_N + col).getRow(row % m_N));
             }
             if(Sudoku.isTest) {
-            	sb.append("  ");
-            	for(int col = 0; col < m_N; col++) {
-            		sb.append(m_BlockList.get(row / m_N * m_N + col).getConstraintRow(row % m_N));
-            	}
+                sb.append("  ");
+                for(int col = 0; col < m_N; col++) {
+                    sb.append(m_BlockList.get(row / m_N * m_N + col).getConstraintRow(row % m_N));
+                }
             }
             sb.append("\n");
         }
