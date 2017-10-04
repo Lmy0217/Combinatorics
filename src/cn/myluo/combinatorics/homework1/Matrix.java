@@ -1,7 +1,7 @@
 package cn.myluo.combinatorics.homework1;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,22 +99,24 @@ public class Matrix {
             } else {
                 while(!choose(m_RandList.get(m_Random.nextInt(m_RandList.size())), m_Random.nextInt(m_N * m_N), false));
             }
-            //System.out.println(getChooseCount());
+            if(Sudoku.isTest) System.out.println("Choose count: " + getChooseCount());
         }
         return true;
     }
     
     public int[] reduce(double rank) {
+    	List<Integer> randList = randList(m_N * m_N * m_N * m_N);
     	for(int i = 0; i < m_N * m_N * m_N * m_N; i++) {
-    		//System.out.println("======" + i);
+    		if(Sudoku.isTest) System.out.println("    reduce" + i);
+    		int randIndex = randList.get(i);
     		if(m_Random.nextDouble() >= rank) {
     			continue;
     		}
     		m_Record.clear();
     		m_Possible.clear();
     		m_PossibleMap.clear();
-    		int row = i / (m_N * m_N);
-    		int col = i % (m_N * m_N);
+    		int row = randIndex / (m_N * m_N);
+    		int col = randIndex % (m_N * m_N);
     		int blockIndex = row / m_N * m_N + col / m_N;
     		int gridIndex = row % m_N * m_N + col % m_N;
     		int index = blockIndex *  m_N * m_N + gridIndex;
@@ -205,6 +207,15 @@ public class Matrix {
         return value;
     }
     
+    private List<Integer> randList(int length) {
+		List<Integer> randList = new ArrayList<Integer>();
+		for(int i = 0; i < length; i++) {
+			randList.add(i);
+		}
+		Collections.shuffle(randList);
+		return randList;
+	}
+    
     private int getChooseCount() {
     	int count = 0;
     	for(int i = 0; i < m_BlockList.size(); i++) {
@@ -229,83 +240,15 @@ public class Matrix {
             for(int col = 0; col < m_N; col++) {
                 sb.append(m_BlockList.get(row / m_N * m_N + col).getRow(row % m_N));
             }
-            sb.append("  ");
-            for(int col = 0; col < m_N; col++) {
-                sb.append(m_BlockList.get(row / m_N * m_N + col).getConstraintRow(row % m_N));
+            if(Sudoku.isTest) {
+            	sb.append("  ");
+            	for(int col = 0; col < m_N; col++) {
+            		sb.append(m_BlockList.get(row / m_N * m_N + col).getConstraintRow(row % m_N));
+            	}
             }
             sb.append("\n");
         }
         return sb.toString();
-    }
-    
-    public static void main(String[] args) {
-    	long startTime = Calendar.getInstance().getTimeInMillis();
-        Matrix matrix = new Matrix(3);
-//    	Matrix matrix = new Matrix(new int[]{
-//    			8, 0, 0, 0, 0, 0, 0, 0, 0,
-//    			0, 0, 3, 6, 0, 0, 0, 0, 0,
-//    			0, 7, 0, 0, 9, 0, 2, 0, 0,
-//    			0, 5, 0, 0, 0, 7, 0, 0, 0,
-//    			0, 0, 0, 0, 4, 5, 7, 0, 0,
-//    			0, 0, 0, 1, 0, 0, 0, 3, 0,
-//    			0, 0, 1, 0, 0, 0, 0, 6, 8,
-//    			0, 0, 8, 5, 0, 0, 0, 1, 0,
-//    			0, 9, 0, 0, 0, 0, 4, 0, 0});
-//    	int[][] puzzles = {
-//    			{
-//    				8, 0, 0, 0, 0, 0, 0, 0, 0,
-//        		    0, 0, 3, 6, 0, 0, 0, 0, 0,
-//        		    0, 7, 0, 0, 9, 0, 2, 0, 0,
-//        		    0, 5, 0, 0, 0, 7, 0, 0, 0,
-//        		    0, 0, 0, 0, 4, 5, 7, 0, 0,
-//        		    0, 0, 0, 1, 0, 0, 0, 3, 0,
-//        		    0, 0, 1, 0, 0, 0, 0, 6, 8,
-//        		    0, 0, 8, 5, 0, 0, 0, 1, 0,
-//        		    0, 9, 0, 0, 0, 0, 4, 0, 0
-//        		},
-//    			{
-//        			0, 0, 7, 0, 0, 0, 8, 2, 0,
-//        	        0, 9, 0, 0, 0, 1, 0, 0, 0,
-//        	        0, 4, 0, 9, 7, 0, 0, 0, 0,
-//        	        0, 0, 0, 0, 0, 5, 4, 0, 6,
-//        	        0, 0, 3, 0, 0, 0, 7, 0, 0,
-//        	        5, 0, 6, 7, 0, 0, 0, 0, 0,
-//        	        0, 0, 0, 0, 8, 4, 0, 5, 0,
-//        	        0, 0, 0, 6, 0, 0, 0, 1, 0,
-//        	        0, 2, 4, 0, 0, 0, 6, 0, 0
-//        	    },
-//    			{
-//        	    	0, 8, 1, 3, 0, 2, 6, 0, 0,
-//        	    	6, 0, 9, 5, 0, 1, 0, 2, 0,
-//        	    	2, 3, 0, 0, 0, 0, 0, 0, 0,
-//        	    	5, 0, 2, 0, 3, 0, 7, 8, 9,
-//        	    	0, 0, 0, 0, 0, 0, 0, 0, 0,
-//        	    	4, 6, 3, 0, 8, 0, 2, 0, 1,
-//        	    	0, 0, 0, 0, 0, 0, 0, 6, 2,
-//        	    	0, 2, 0, 7, 0, 9, 5, 0, 3,
-//        	    	0, 0, 6, 8, 0, 3, 9, 4, 0
-//    			}
-//    	};
-//    	Matrix matrix = new Matrix(puzzles[0]);
-        matrix.increase();
-        System.out.println(matrix);
-        int[] puzzle = matrix.reduce(0.8);
-        for(int i = 0; i < 9; i++) {
-        	for(int j = 0; j < 9; j++) {
-        		System.out.print(puzzle[i * 9 + j]);
-        	}
-        	System.out.println();
-        }
-        System.out.println();
-        System.out.println(matrix);
-        Matrix m1 = new Matrix(puzzle);
-        m1.increase();
-        System.out.println(m1);
-        Matrix m2 = new Matrix(puzzle);
-        m2.increase();
-        System.out.println(m2);
-        long stopTime = Calendar.getInstance().getTimeInMillis();
-        System.out.println(stopTime - startTime);
     }
 
 }
