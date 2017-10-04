@@ -121,6 +121,14 @@ public class Block {
 	    return sb.toString();
 	}
 	
+	public int[] getRowArray(int index) {
+		int[] array = new int[m_N];
+		for(int i = index * m_N; i < (1 + index) * m_N; i++) {
+	        array[i - index * m_N] = m_GridList.get(i).getValue();
+	    }
+		return array;
+	}
+	
 	public String toString() {
 	    StringBuilder sb = new StringBuilder();
 	    for(int i = 0; i < m_N; i++) {

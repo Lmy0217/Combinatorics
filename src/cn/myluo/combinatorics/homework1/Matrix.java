@@ -104,10 +104,12 @@ public class Matrix {
         return true;
     }
     
-    public void reduce(double rank) {
+    public int[] reduce(double rank) {
     	for(int i = 0; i < m_N * m_N * m_N * m_N; i++) {
     		//System.out.println("======" + i);
-    		if(m_Random.nextDouble() >= rank) continue;
+    		if(m_Random.nextDouble() >= rank) {
+    			continue;
+    		}
     		m_Record.clear();
     		m_Possible.clear();
     		m_PossibleMap.clear();
@@ -119,16 +121,19 @@ public class Matrix {
     		m_Record.add(index);
     		int value = cancel(index, true);
     		if(choose(index, m_Random.nextInt(m_N * m_N), false) && increase()) {
-    			for(int j = m_Record.size() - 1; j >= 0; j--) {
+    			for(int j = m_Record.size() - 1; j > 0; j--) {
     				int recordValue = m_Record.get(j);
     				cancel(recordValue, true);
     				m_BlockList.get(recordValue / (m_N * m_N)).restore(recordValue % (m_N * m_N));
     			}
+    			cancel(m_Record.get(0), false);
+    			m_BlockList.get(blockIndex).restore(gridIndex);
     			choose(index, value, true);
     		} else {
     			m_BlockList.get(blockIndex).restore(gridIndex);
     		}
     	}
+    	return toArray();
     }
     
     private boolean choose(int index, int rand, boolean isValue) {
@@ -208,6 +213,16 @@ public class Matrix {
     	return count;
     }
     
+    public int[] toArray() {
+    	int[] array = new int[m_N * m_N * m_N * m_N];
+    	for(int row = 0; row < m_N * m_N; row++) {
+    		for(int col = 0; col < m_N; col++) {
+    			System.arraycopy(m_BlockList.get(row / m_N * m_N + col).getRowArray(row % m_N), 0, array, row * m_N * m_N + col * m_N, m_N);
+    		}
+    	}
+    	return array;
+    }
+    
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for(int row = 0; row < m_N * m_N; row++) {
@@ -274,9 +289,22 @@ public class Matrix {
 //    	Matrix matrix = new Matrix(puzzles[0]);
         matrix.increase();
         System.out.println(matrix);
-        matrix.reduce(0.8);
-        long stopTime = Calendar.getInstance().getTimeInMillis();
+        int[] puzzle = matrix.reduce(0.8);
+        for(int i = 0; i < 9; i++) {
+        	for(int j = 0; j < 9; j++) {
+        		System.out.print(puzzle[i * 9 + j]);
+        	}
+        	System.out.println();
+        }
+        System.out.println();
         System.out.println(matrix);
+        Matrix m1 = new Matrix(puzzle);
+        m1.increase();
+        System.out.println(m1);
+        Matrix m2 = new Matrix(puzzle);
+        m2.increase();
+        System.out.println(m2);
+        long stopTime = Calendar.getInstance().getTimeInMillis();
         System.out.println(stopTime - startTime);
     }
 
