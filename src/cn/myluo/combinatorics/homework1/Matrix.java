@@ -1,3 +1,8 @@
+/**
+ *   Matrix.java
+ *   Copyright (C) 2017 Nanchang University, JiangXi, China
+ */
+
 package cn.myluo.combinatorics.homework1;
 
 import java.util.ArrayList;
@@ -7,26 +12,66 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Class of Sudoku matrix, including square of blocks and some information structure.
+ * 
+ * @version 1710
+ * @author Mingyuan Luo
+ */
 public class Matrix {
     
+	/**
+	 * The list of square of blocks, in which indexes are increased from left to right and top to bottom by the square.
+	 * 
+	 * @see cn.myluo.combinatorics.homework1.Block
+	 */
     private List<Block> m_BlockList;
     
+    /**
+     * The indexes list of grids which record written grids in turn. The indexes of grids in this list are same as the run possible list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_Possible m_Possible} indexes.
+     */
     private List<Integer> m_Record;
     
+    /**
+     * The indexes list of grids which save the run possible grids in turn. The indexes of grids in this list is {@code k * s + i}, where {@code k} is the index of block in which the grid is in the square blocks list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_BlockList m_BlockList}, {@code s} is the number of girds in one block, {@code i} is the index of grid in the square grids list {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList m_GridList} in block in which the grid is.
+     */
     private List<Integer> m_Possible;
     
+    /**
+     * The indexes map of grids based on the run possible list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_Possible m_Possible}, easy to search.
+     */
     private Map<Integer, Integer> m_PossibleMap;
     
+    /**
+     * The indexes list of grids which is not written. The indexes of grids in this list are same as the run possible list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_Possible m_Possible} indexes.
+     */
     private List<Integer> m_RandList;
     
+    /**
+     * The indexes list of grids based on the not written list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_RandList m_RandList}, easy to delete.
+     */
     private List<Integer> m_RandIndex;
     
+    /**
+     * The Suduku matrix size which is the number of blocks in each row and is equal to the number of grids in each row in one block. In other words, a matrix has {@code m_N * m_N} blocks and a block has {@code m_N * m_N} grids.
+     */
     private int m_N;
     
+    /**
+     * The number of girds which has been written.
+     * 
+     * @see cn.myluo.combinatorics.homework1.Grid#m_Value
+     */
     private int m_Count;
     
+    /**
+     * The random generator used to generate random numbers.
+     */
     private Random m_Random;
     
+    /**
+     * No parameter construction method for initialize some lists.
+     */
     private Matrix() {
         
         m_BlockList = new ArrayList<Block>();
@@ -38,24 +83,42 @@ public class Matrix {
         m_Random = new Random(System.currentTimeMillis());
     }
     
+    /**
+     * Construction method calling the no parameter construction method
+	 * {@linkplain cn.myluo.combinatorics.homework1.Matrix#Matrix() Matrix()} and the
+	 * initialization method
+	 * {@linkplain cn.myluo.combinatorics.homework1.Matrix#init() init()}.
+     * @param n the Suduku size
+     * @see cn.myluo.combinatorics.homework1.Matrix#m_N
+     */
     public Matrix(int n) {
         
         this();
+        // determine the legitimacy
         if(n < 1) System.out.println("n must be positive!");
         m_N = n;
         init();
     }
     
+    /**
+     * Construction method to create a Sudoku matrix with Sudoku puzzle.
+     * @param puzzle the integer array including the Sudoku puzzle values in each grid from left to right and top to bottom in turn, and the value 0 in puzzle if this grid is not written specially
+     */
     public Matrix(int[] puzzle) {
         
         this();
+        // puzzle has error such as numerical contradiction or length error
         if(!init(puzzle)) System.out.println("Puzzle error!");
     }
     
+    /**
+     * Initializes the square blocks list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_BlockList m_BlockList} and makes the not written list {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_RandList m_RandList} including all indexes of grids.
+     */
     private void init() {
         
         for(int i = 0; i < m_N * m_N; i++) {
             m_BlockList.add(new Block(m_N, i));
+            
             for(int j = 0; j < m_N * m_N; j++) {
                 m_RandList.add(i * m_N * m_N + j);
                 m_RandIndex.add(i * m_N * m_N + j);
@@ -63,13 +126,24 @@ public class Matrix {
         }
     }
     
+    /**
+     * Initialize method calling the no parameter initialize method {@linkplain cn.myluo.combinatorics.homework1.Matrix#init() init()} and write grids values with the given Sudoku puzzle.
+     * @param puzzle the integer array including the Sudoku puzzle values in each grid from left to right and top to bottom in turn, and the value 0 in puzzle if this grid is not written specially
+     * @return the value true if the given puzzle has error, the value false otherwise
+     */
     private boolean init(int[] puzzle) {
         
+    	// determine the legitimacy
         if(puzzle == null) return false;
         double dn = Math.sqrt(Math.sqrt((double)puzzle.length));
         if(Math.floor(dn) != dn) return false;
+        
         m_N = (new Double(dn)).intValue();
+        
+        // calling no parameter initialize method
         init();
+        
+        // writing grids values
         for(int i = 0; i < puzzle.length; i++) {
             if(puzzle[i] < 1 || puzzle[i] > m_N * m_N) continue;
             int row = i / (m_N * m_N);
@@ -79,9 +153,14 @@ public class Matrix {
             int index = blockIndex *  m_N * m_N + gridIndex;
             if(!choose(index, puzzle[i], true)) return false;
         }
+        
         return true;
     }
     
+    /**
+     * 
+     * @return
+     */
     public boolean increase() {
         
         while(m_Count != m_N * m_N) {
