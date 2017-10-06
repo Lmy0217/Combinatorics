@@ -11,7 +11,7 @@ Combinatorics homework.
 
 ## Code Structure
 * homework1 -- homework #1 (Sudoku)
-  * Sudoku.java -- test class of Sudoku, **the instructions of `API` is in `main` method**
+  * Sudoku.java -- test class of Sudoku, **the instructions of API is in `main` method**
   * Matrix.java -- matrix class, the whole Sudoku as a matrix
   * Block.java -- block class, a matrix contains `N * N` blocks
   * Grid.java -- grid class, a block contains `N * N` grids

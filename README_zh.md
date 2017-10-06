@@ -11,7 +11,7 @@
 
 ## 代码结构
 * homework1 -- 第一次作业（数独）
-  * Sudoku.java -- 数独测试类，**具体 `API` 请看其中的 `main` 方法**
+  * Sudoku.java -- 数独测试类，**具体 API 请看其中的 `main` 方法**
   * Matrix.java -- 矩阵类，整个数独作为一个矩阵
   * Block.java -- 块类，一个矩阵包含 `N * N` 个块
   * Grid.java -- 格类，一个块包含 `N * N` 个格

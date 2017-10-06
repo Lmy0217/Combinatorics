@@ -68,7 +68,8 @@ public class Sudoku {
         System.out.println("Perhaps take a long time...");
         long startTime = Calendar.getInstance().getTimeInMillis();
 
-        // create a empty matrix
+        // create a empty 3^2*3^2 matrix
+        // it will certainly take a long time if you want to create 4^2*4^2 or larger matrix
         Matrix matrix = new Matrix(3);
         // randomly find a final solution
         matrix.increase();
