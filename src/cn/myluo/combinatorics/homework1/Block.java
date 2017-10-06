@@ -306,10 +306,10 @@ public class Block {
         StringBuilder sb = new StringBuilder();
 
         // the largest string length
-        int width = 1 + ("" + (m_N * m_N)).length();
+        int width = 1 + Integer.toString(m_N * m_N).length();
         for (int i = index * m_N; i < (1 + index) * m_N; i++) {
             // get the number of the possible written values
-            String count = "" + m_GridList.get(i).getConstraintCount();
+            String count = Integer.toString(m_GridList.get(i).getConstraintCount());
             // blank fill
             for (int j = 0; j < width - count.length(); j++) {
                 sb.append(" ");
@@ -334,7 +334,7 @@ public class Block {
         StringBuilder sb = new StringBuilder();
 
         // the largest string length
-        int width = 1 + ("" + (m_N * m_N)).length();
+        int width = 1 + Integer.toString(m_N * m_N).length();
         for (int i = index * m_N; i < (1 + index) * m_N; i++) {
             // get the description of the grid
             String description = m_GridList.get(i).toString();
@@ -373,6 +373,7 @@ public class Block {
      * 
      * @return the string of values from grids in each row
      */
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();

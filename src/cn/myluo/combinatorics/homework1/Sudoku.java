@@ -55,6 +55,10 @@ public class Sudoku {
             }
     };
 
+    /**
+     * Tests method of Sudoku.
+     * @param args ignore
+     */
     public static void main(String[] args) {
 
         /**

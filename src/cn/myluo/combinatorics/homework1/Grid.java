@@ -243,7 +243,7 @@ public class Grid {
     public int choose(int rand, boolean isValue) {
 
         // restrictive conditions
-        if ((!isValue && (m_ConstraintList.size() == 0 || (m_isStart && m_NextList.size() == 0)))
+        if ((!isValue && (m_ConstraintList.isEmpty() || (m_isStart && m_NextList.isEmpty())))
                 || (isValue && m_ConstraintIndex.get(rand - 1) == -1)) {
             m_isStart = false;
             return -1;
@@ -339,9 +339,10 @@ public class Grid {
      * 
      * @return the string of written value if it is not 0, the "x" if it is 0.
      */
+    @Override
     public String toString() {
 
-        return m_Value == 0 ? "x" : ("" + m_Value);
+        return m_Value == 0 ? "x" : Integer.toString(m_Value);
     }
 
 }

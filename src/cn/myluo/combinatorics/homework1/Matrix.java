@@ -177,7 +177,7 @@ public class Matrix {
         if (puzzle == null)
             return false;
         double dn = Math.sqrt(Math.sqrt((double) puzzle.length));
-        if (Math.floor(dn) != dn)
+        if (Math.abs(dn - Math.floor(dn)) > 0)
             return false;
 
         m_N = (new Double(dn)).intValue();
@@ -218,10 +218,10 @@ public class Matrix {
 
             // written grid in turn if the run possible list is not empty, random written
             // otherwise
-            if (m_Possible.size() != 0) {
+            if (!m_Possible.isEmpty()) {
                 if (!choose(m_Possible.get(0), m_Random.nextInt(m_N * m_N), false)) {
                     // written failed, go back
-                    if (m_Record.size() == 0)
+                    if (m_Record.isEmpty())
                         return false;
                     int value = m_Record.get(m_Record.size() - 1);
                     m_Possible.add(0, value);
@@ -506,6 +506,7 @@ public class Matrix {
      * @return the string of values from grids in this matrix
      * @see cn.myluo.combinatorics.homework1.Block#getRow(int)
      */
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
