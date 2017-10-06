@@ -95,14 +95,14 @@ public class Sudoku {
         System.out.println("Perhaps take a long time...");
         startTime = Calendar.getInstance().getTimeInMillis();
 
-        // create a matrix with homework's puzzle 1
+        // create a matrix with homework's Sudoku puzzle #1
         matrix = new Matrix(m_Puzzles[0]);
 
         // solve the puzzle
         matrix.increase();
 
         // output the solution
-        System.out.println("Solution of homework's puzzle 1:");
+        System.out.println("Solution of homework's Sudoku puzzle #1:");
         System.out.print(matrix);
 
         stopTime = Calendar.getInstance().getTimeInMillis();
@@ -114,14 +114,14 @@ public class Sudoku {
          */
         startTime = Calendar.getInstance().getTimeInMillis();
 
-        // create a matrix with homework's puzzle 2
+        // create a matrix with homework's Sudoku puzzle #2
         matrix = new Matrix(m_Puzzles[1]);
 
         // solve the puzzle
         matrix.increase();
 
         // output the solution
-        System.out.println("Solution of homework's puzzle 2:");
+        System.out.println("Solution of homework's Sudoku puzzle #2:");
         System.out.print(matrix);
 
         stopTime = Calendar.getInstance().getTimeInMillis();
