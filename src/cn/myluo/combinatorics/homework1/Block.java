@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Class of Sudoku based structure, including square of girds and some
  * information structure.
- * 
+ *
  * @version 1710
  * @author Mingyuan Luo
  */
@@ -22,7 +22,7 @@ public class Block {
     /**
      * The list of square of girds, in which indexes are increased from left to
      * right and top to bottom by the square.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid
      */
     private List<Grid> m_GridList;
@@ -43,21 +43,21 @@ public class Block {
 
     /**
      * The number of girds which has been written in this block.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid#m_Value
      */
     private int m_Count;
 
     /**
      * The storage of Suduku size value.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
     private int m_N;
 
     /**
      * The index of this block in Sudoku.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Matrix#m_BlockList
      */
     private int m_Index;
@@ -77,14 +77,14 @@ public class Block {
      * {@linkplain cn.myluo.combinatorics.homework1.Block#Block() Block()} and the
      * initialization method
      * {@linkplain cn.myluo.combinatorics.homework1.Block#init() init()}.
-     * 
+     *
      * @param n
-     *            the Suduku size
+     *            the Suduku size must be positive
      * @param index
      *            the index of this block in Sudoku
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
-    public Block(int n, int index) {
+    Block(int n, int index) {
 
         this();
         m_N = n;
@@ -111,11 +111,11 @@ public class Block {
 
     /**
      * Gets the number of girds which has been written in this block.
-     * 
+     *
      * @return the number of girds which has been written in this block
      * @see cn.myluo.combinatorics.homework1.Block#m_Count
      */
-    public int getCount() {
+    int getCount() {
 
         return m_Count;
     }
@@ -124,7 +124,7 @@ public class Block {
      * Constraints the grid indexed by the given index and the constraint values
      * list {@linkplain cn.myluo.combinatorics.homework1.Block#m_ConstraintList
      * m_ConstraintList} with the given constraint value.
-     * 
+     *
      * @param index
      *            the given index of grid in the square girds list
      *            {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList
@@ -137,7 +137,7 @@ public class Block {
      *         m_Possible} indexes of grids
      * @see cn.myluo.combinatorics.homework1.Matrix#m_Possible
      */
-    public List<Integer> limit(int index, int value) {
+    List<Integer> limit(int index, int value) {
 
         List<Integer> next = new ArrayList<Integer>();
 
@@ -166,7 +166,7 @@ public class Block {
      * Expands the grid indexed by the given index and the constraint values list
      * {@linkplain cn.myluo.combinatorics.homework1.Block#m_ConstraintList
      * m_ConstraintList} with the given expand value.
-     * 
+     *
      * @param index
      *            the given index of grid in the square girds list
      *            {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList
@@ -174,7 +174,7 @@ public class Block {
      * @param value
      *            the given expand value
      */
-    public void expand(int index, int value) {
+    void expand(int index, int value) {
 
         // expand the constraint values list
         if (m_ConstraintList.get(index).get(value) == null)
@@ -198,7 +198,7 @@ public class Block {
     /**
      * Writes the value to the grid indexed by the given index with the given value
      * or random value.
-     * 
+     *
      * @param index
      *            the given index of grid in the square girds list
      *            {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList
@@ -215,7 +215,7 @@ public class Block {
      *         m_Possible} indexes of grids
      * @see cn.myluo.combinatorics.homework1.Matrix#m_Possible
      */
-    public List<Integer> choose(int index, int rand, boolean isValue) {
+    List<Integer> choose(int index, int rand, boolean isValue) {
 
         List<Integer> next = new ArrayList<Integer>();
 
@@ -245,7 +245,7 @@ public class Block {
     /**
      * Cancels the written value from the grid indexed by the given index with
      * different operations.
-     * 
+     *
      * @param index
      *            the given index of grid in the square girds list
      *            {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList
@@ -256,7 +256,7 @@ public class Block {
      *            Grid.cancel(boolean)}
      * @return the written value from the grid indexed by the given index
      */
-    public int cancel(int index, boolean isStorage) {
+    int cancel(int index, boolean isStorage) {
 
         // cancel the written value
         int value = m_GridList.get(index).cancel(isStorage);
@@ -280,14 +280,14 @@ public class Block {
 
     /**
      * Restore the written value in the grid indexed by the given index.
-     * 
+     *
      * @param index
      *            the given index of grid in the square girds list
      *            {@linkplain cn.myluo.combinatorics.homework1.Block#m_GridList
      *            m_GridList}
      * @see cn.myluo.combinatorics.homework1.Grid#restore()
      */
-    public void restore(int index) {
+    void restore(int index) {
 
         m_GridList.get(index).restore();
     }
@@ -295,13 +295,13 @@ public class Block {
     /**
      * Returns the string consists the number of the possible written values in each
      * grid in the row by the given index and appropriate interval.
-     * 
+     *
      * @param index
      *            the given index of row increased from top (value 0) to bottom
      * @return the string consists the number of the possible written values in each
      *         grid in the row by the given index and appropriate interval
      */
-    public String getConstraintRow(int index) {
+    String getConstraintRow(int index) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -323,13 +323,13 @@ public class Block {
     /**
      * Returns the string consists the description of each grid in the row by the
      * given index and appropriate interval.
-     * 
+     *
      * @param index
      *            the given index of row increased from top (value 0) to bottom
      * @return the string consists the description of each grid in the row by the
      *         given index and appropriate interval
      */
-    public String getRow(int index) {
+    String getRow(int index) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -351,13 +351,13 @@ public class Block {
     /**
      * Returns the integer array consists the value of each grid in the row by the
      * given index.
-     * 
+     *
      * @param index
      *            the given index of row increased from top (value 0) to bottom
      * @return the integer array consists the value of each grid in the row by the
      *         given index
      */
-    public int[] getRowArray(int index) {
+    int[] getRowArray(int index) {
 
         int[] array = new int[m_N];
         for (int i = index * m_N; i < (1 + index) * m_N; i++) {
@@ -370,7 +370,7 @@ public class Block {
 
     /**
      * Returns a description of this block.
-     * 
+     *
      * @return the string of values from grids in each row
      */
     @Override

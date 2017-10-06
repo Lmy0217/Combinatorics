@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * Class of Sudoku matrix, including square of blocks and some information
  * structure.
- * 
+ *
  * @version 1710
  * @author Mingyuan Luo
  */
@@ -24,7 +24,7 @@ public class Matrix {
     /**
      * The list of square of blocks, in which indexes are increased from left to
      * right and top to bottom by the square.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Block
      */
     private List<Block> m_BlockList;
@@ -80,7 +80,7 @@ public class Matrix {
 
     /**
      * The number of girds which has been written.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid#m_Value
      */
     private int m_Count;
@@ -108,25 +108,28 @@ public class Matrix {
      * Construction method calling the no parameter construction method
      * {@linkplain cn.myluo.combinatorics.homework1.Matrix#Matrix() Matrix()} and
      * the initialization method
-     * {@linkplain cn.myluo.combinatorics.homework1.Matrix#init() init()}.
-     * 
+     * {@linkplain cn.myluo.combinatorics.homework1.Matrix#init() init()} where
+     * parameter is no errors.
+     *
      * @param n
-     *            the Suduku size
+     *            the Suduku size must be positive
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
     public Matrix(int n) {
 
         this();
         // determine the legitimacy
-        if (n < 1)
+        if (n < 1) {
             System.out.println("n must be positive!");
+            return;
+        }
         m_N = n;
         init();
     }
 
     /**
      * Construction method to create a Sudoku matrix with Sudoku puzzle.
-     * 
+     *
      * @param puzzle
      *            the integer array including the Sudoku puzzle values in each grid
      *            from left to right and top to bottom in turn, and the value 0 in
@@ -163,12 +166,12 @@ public class Matrix {
      * Initialize method calling the no parameter initialize method
      * {@linkplain cn.myluo.combinatorics.homework1.Matrix#init() init()} and write
      * grids values with the given Sudoku puzzle.
-     * 
+     *
      * @param puzzle
      *            the integer array including the Sudoku puzzle values in each grid
      *            from left to right and top to bottom in turn, and the value 0 in
      *            puzzle if this grid is not written specially
-     * @return the value true if the given puzzle has error, the value false
+     * @return the value true if the given puzzle has errors, the value false
      *         otherwise
      */
     private boolean init(int[] puzzle) {
@@ -206,7 +209,7 @@ public class Matrix {
      * solution is not only one. The method is based on write (calling
      * {@linkplain cn.myluo.combinatorics.homework1.Matrix#choose(int, int, boolean)
      * choose(int, int, boolean)}) in turn or random and go back if failed.
-     * 
+     *
      * @return the value true if this matrix has the final solution, the value false
      *         otherwise
      * @see cn.myluo.combinatorics.homework1.Matrix#choose(int, int, boolean)
@@ -245,20 +248,29 @@ public class Matrix {
     }
 
     /**
-     * Creates a puzzle from final solution with the given rank. The method is based
-     * on random dig holes in turn.
-     * 
+     * Creates a puzzle which has unique solution from final solution with the given
+     * rank. The method is based on random dig holes in turn.
+     *
      * @param rank
-     *            the value of puzzle difficulty between 0.0 and 1.0
+     *            the value of puzzle difficulty between 0.0 and 1.0, the difficulty
+     *            is direct proportional to the value
      * @return the integer array including the values at the created puzzle in turn
+     *         if the parameter and the final solution is no errors, the value null
+     *         otherwise
      * @see cn.myluo.combinatorics.homework1.Matrix#increase()
      * @see cn.myluo.combinatorics.homework1.Matrix#toArray()
      */
     public int[] reduce(double rank) {
 
         // determine the legitimacy
-        if (rank <= 0 || rank >= 1)
+        if (rank <= 0 || rank >= 1) {
             System.out.println("rank must between 0.0 and 1.0!");
+            return null;
+        }
+        if (m_Count != m_N * m_N) {
+            System.out.println("matrix must be full, please run increase() first!");
+            return null;
+        }
 
         List<Integer> randList = randList(m_N * m_N * m_N * m_N);
         for (int i = 0; i < m_N * m_N * m_N * m_N; i++) {
@@ -314,7 +326,7 @@ public class Matrix {
     /**
      * Writes the value to the grid indexed by the given index with the given value
      * or random value.
-     * 
+     *
      * @param index
      *            the given index of grid and it is same as the run possible list
      *            {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_Possible
@@ -400,7 +412,7 @@ public class Matrix {
     /**
      * Cancels the written value from the grid indexed by the given index with
      * different operations.
-     * 
+     *
      * @param index
      *            the given index of grid and it is same as the run possible list
      *            {@linkplain cn.myluo.combinatorics.homework1.Matrix#m_Possible
@@ -446,7 +458,7 @@ public class Matrix {
     /**
      * Gets a random integer list with the given length including {@code 1} to
      * {@code length - 1}.
-     * 
+     *
      * @param length
      *            the given length value
      * @return a random integer list with the given length including {@code 1} to
@@ -467,7 +479,7 @@ public class Matrix {
 
     /**
      * Gets the number of girds which has been written.
-     * 
+     *
      * @return the number of girds which has been written
      * @see cn.myluo.combinatorics.homework1.Block#m_Count
      */
@@ -483,7 +495,7 @@ public class Matrix {
 
     /**
      * Returns the integer array consists the value of each grid.
-     * 
+     *
      * @return the integer array consists the value of each grid
      * @see cn.myluo.combinatorics.homework1.Block#getRowArray(int)
      */
@@ -502,7 +514,7 @@ public class Matrix {
 
     /**
      * Returns a description of this Sudoku matrix.
-     * 
+     *
      * @return the string of values from grids in this matrix
      * @see cn.myluo.combinatorics.homework1.Block#getRow(int)
      */

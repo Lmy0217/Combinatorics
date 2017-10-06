@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 /**
  * Class of Sudoku methods testing.
- * 
+ *
  * @see cn.myluo.combinatorics.homework1.Matrix
  * @version 1710
  * @author Mingyuan Luo
@@ -20,12 +20,12 @@ public class Sudoku {
      * The flag of testing. Output the log to the console if the value is true, not
      * otherwise.
      */
-    public static final boolean m_isTest = false;
+    static final boolean m_isTest = false;
 
     /**
      * The Sudoku puzzles including two homework's Sudoku matrixes. If you want to
      * test the other Sudoku matrixes, you could add in.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Matrix#Matrix(int[])
      */
     private static final int[][] m_Puzzles = {
@@ -62,15 +62,17 @@ public class Sudoku {
     public static void main(String[] args) {
 
         /**
-         * Randomly create puzzle and solve Note: perhaps take a long time.
+         * Randomly create puzzle and solve
+         * Note: perhaps take a long time.
          */
+        System.out.println("Perhaps take a long time...");
         long startTime = Calendar.getInstance().getTimeInMillis();
 
         // create a empty matrix
         Matrix matrix = new Matrix(3);
         // randomly find a final solution
         matrix.increase();
-        // create a random puzzle by digging holes with rank 0.6
+        // create a random puzzle which has unique solution by digging holes with rank 0.6
         matrix.reduce(0.6);
         // output the random puzzle
         System.out.println("Randomly create puzzle:");
@@ -87,8 +89,10 @@ public class Sudoku {
                 "Spent " + (stopTime - startTime) + " millisecond" + ((stopTime - startTime) > 1 ? "s" : "") + "\n\n");
 
         /**
-         * Solution of homework's puzzle 1 Note: perhaps take a long time.
+         * Solution of homework's puzzle 1
+         * Note: perhaps take a long time.
          */
+        System.out.println("Perhaps take a long time...");
         startTime = Calendar.getInstance().getTimeInMillis();
 
         // create a matrix with homework's puzzle 1

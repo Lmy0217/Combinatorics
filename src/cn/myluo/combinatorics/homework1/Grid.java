@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Class of Sudoku basic element(grid), including the written value and some
  * information structure.
- * 
+ *
  * @version 1710
  * @author Mingyuan Luo
  */
@@ -31,7 +31,7 @@ public class Grid {
      * The indexes of the possible written values list
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_ConstraintList
      * m_ConstraintList}, easy to delete operation.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid#m_ConstraintList
      */
     private List<Integer> m_ConstraintIndex;
@@ -47,14 +47,14 @@ public class Grid {
      * The indexes of the next written values list
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_NextList m_NextList},
      * easy to delete operation.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid#m_NextList
      */
     private List<Integer> m_NextIndex;
 
     /**
      * The storage of Suduku size value.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
     private int m_N;
@@ -98,12 +98,12 @@ public class Grid {
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#Grid() Grid()} and the
      * initialization method
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#init() init()}.
-     * 
+     *
      * @param n
-     *            the Suduku size
+     *            the Suduku size must be positive
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
-    public Grid(int n) {
+    Grid(int n) {
 
         this();
         m_N = n;
@@ -113,7 +113,7 @@ public class Grid {
     /**
      * Makes the possible written values list including all possible values (1 to
      * the square of the Suduku size.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Matrix#m_N
      */
     private void init() {
@@ -126,55 +126,55 @@ public class Grid {
 
     /**
      * Gets the written value.
-     * 
+     *
      * @return the written value
      * @see cn.myluo.combinatorics.homework1.Grid#m_Value
      */
-    public int getValue() {
+    int getValue() {
 
         return m_Value;
     }
 
     /**
      * Gets the flag of the written value.
-     * 
+     *
      * @return the flag of the written value
      * @see cn.myluo.combinatorics.homework1.Grid#m_isChoose
      */
-    public boolean isChoose() {
+    boolean isChoose() {
 
         return m_isChoose;
     }
 
     /**
      * Gets the flag of written.
-     * 
+     *
      * @return the flag of written
      * @see cn.myluo.combinatorics.homework1.Grid#m_isStart
      */
-    public boolean isStart() {
+    boolean isStart() {
 
         return m_isStart;
     }
 
     /**
      * Gets the number of elements in the possible written values list.
-     * 
+     *
      * @return the number of elements in the possible written values list
      * @see cn.myluo.combinatorics.homework1.Grid#m_ConstraintList
      */
-    public int getConstraintCount() {
+    int getConstraintCount() {
 
         return m_ConstraintList.size();
     }
 
     /**
      * Gets the number of elements in the next written values list.
-     * 
+     *
      * @return the number of elements in the next written values list
      * @see cn.myluo.combinatorics.homework1.Grid#m_NextList
      */
-    public int getNextCount() {
+    int getNextCount() {
 
         return m_NextList.size();
     }
@@ -183,7 +183,7 @@ public class Grid {
      * Constraints the possible written values list
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_ConstraintList
      * m_ConstraintList} by the given value.
-     * 
+     *
      * @param value
      *            the given value from all possible values
      * @return the flag of this grid whether to enter the run possible list, the
@@ -194,7 +194,7 @@ public class Grid {
      *         otherwise.
      * @see cn.myluo.combinatorics.homework1.Matrix#m_Possible
      */
-    public boolean limit(int value) {
+    boolean limit(int value) {
 
         int index = m_ConstraintIndex.get(value - 1);
         // has been constrained
@@ -214,11 +214,11 @@ public class Grid {
      * Expands the possible written values list
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_ConstraintList
      * m_ConstraintList} by the given value.
-     * 
+     *
      * @param value
      *            the given value from all possible values
      */
-    public void expand(int value) {
+    void expand(int value) {
 
         if (m_ConstraintIndex.get(value - 1) != -1 || value == m_Storage)
             return;
@@ -231,7 +231,7 @@ public class Grid {
     /**
      * Writes the value {@linkplain cn.myluo.combinatorics.homework1.Grid#m_Value
      * m_Value} by the given value or random value.
-     * 
+     *
      * @param rand
      *            the given random number to choose written value if parameter
      *            isValue is false, the given written value if parameter isValue is
@@ -240,7 +240,7 @@ public class Grid {
      *            the flag of parameter rand is or not the given written value
      * @return the written value
      */
-    public int choose(int rand, boolean isValue) {
+    int choose(int rand, boolean isValue) {
 
         // restrictive conditions
         if ((!isValue && (m_ConstraintList.isEmpty() || (m_isStart && m_NextList.isEmpty())))
@@ -284,7 +284,7 @@ public class Grid {
      * Cancels the written value
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_Value m_Value} with
      * different operations.
-     * 
+     *
      * @param isStorage
      *            the value true if cancels with save to the storage
      *            {@linkplain cn.myluo.combinatorics.homework1.Grid#m_Storage
@@ -293,7 +293,7 @@ public class Grid {
      *            m_ConstraintList}, the value false otherwise
      * @return the written value
      */
-    public int cancel(boolean isStorage) {
+    int cancel(boolean isStorage) {
 
         // different operations
         if (!isStorage) {
@@ -320,10 +320,10 @@ public class Grid {
      * {@linkplain cn.myluo.combinatorics.homework1.Grid#m_Value m_Value} from the
      * storage {@linkplain cn.myluo.combinatorics.homework1.Grid#m_Storage
      * m_Storage}.
-     * 
+     *
      * @see cn.myluo.combinatorics.homework1.Grid#cancel(boolean)
      */
-    public void restore() {
+    void restore() {
 
         // cross add with two lists
         m_ConstraintList.add(m_Storage);
@@ -336,7 +336,7 @@ public class Grid {
 
     /**
      * Returns a description of this grid.
-     * 
+     *
      * @return the string of written value if it is not 0, the "x" if it is 0.
      */
     @Override
