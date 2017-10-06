@@ -1,6 +1,6 @@
 /**
  *   Block.java
- *   Copyright (C) 2017 Nanchang University, JiangXi, China
+ *   Copyright (C) 2017 Mingyuan Luo
  */
 
 package cn.myluo.combinatorics.homework1;
