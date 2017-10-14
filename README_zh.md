@@ -15,6 +15,8 @@
   * Matrix.java -- 矩阵类，整个数独作为一个矩阵
   * Block.java -- 块类，一个矩阵包含 `N * N` 个块
   * Grid.java -- 格类，一个块包含 `N * N` 个格
+* homework2 -- 第二次作业 (三数之和问题)
+  * ThreeSum.java -- 三数之和问题的求解类，**具体 API 请看其中的 `main` 方法**
 
 ## 许可证
 [MIT 许可证](LICENSE)

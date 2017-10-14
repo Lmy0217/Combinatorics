@@ -15,6 +15,8 @@ Combinatorics homework.
   * Matrix.java -- matrix class, the whole Sudoku as a matrix
   * Block.java -- block class, a matrix contains `N * N` blocks
   * Grid.java -- grid class, a block contains `N * N` grids
+* homework2 -- homework #2 (3Sum)
+  * ThreeSum.java -- solver class of 3Sum puzzle, **the instructions of API is in `main` method**
 
 ## License
 [MIT License](LICENSE)
