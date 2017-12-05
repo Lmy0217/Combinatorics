@@ -116,7 +116,7 @@ public class ThreeSum {
     }
 
     /**
-     * The solver of the 3Sum puzzle with the {@code O(n^2)} time complexity.
+     * The solver of the 3Sum puzzle with the {@code O(n^2*logn)} time complexity.
      */
     private void solve() {
 
